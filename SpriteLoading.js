@@ -18,6 +18,8 @@ var SpriteLoading = function (container, custom_options) {
             out_end: 45
         },
         backdrop: false,
+        text: false,
+        bar: false,
         theme: 'light',
         sprite_url: 'https://raw.githubusercontent.com/Correlife/SpriteLoading.js/master/loading.png',
         sprite_url_dark: 'https://raw.githubusercontent.com/Correlife/SpriteLoading.js/master/loading-dark.png'
@@ -25,7 +27,7 @@ var SpriteLoading = function (container, custom_options) {
     var frame = options.frames.start;
     var that = this;
     this.set_finish = false;
-    this.finish_callback = false;
+    this.finish_callback = function(){};
 
     if (options.backdrop) {
         var bd = $('<div class="sprite-loading-backdrop"></div>').appendTo(container)
@@ -36,6 +38,52 @@ var SpriteLoading = function (container, custom_options) {
                 height:'100%',
                 position:'absolute',
                 'top':0})
+            .hide().fadeIn(200);
+    }
+    if (options.text !== false && options.text.length > 0) {
+        this.text_el = $('<div class="sprite-loading-text"></div>').appendTo(container)
+            .css({
+                color:(options.theme === 'dark' ? '#000' : '#fff'),
+                width:'100%',
+                height:'auto',
+                position:'absolute',
+                'top': '50%',
+                'transform': 'translateY(-50%)',
+                '-webkit-transform': 'translateY(-50%)',
+                '-ms-transform': 'translateY(-50%)',
+                'text-align': 'center',
+                'margin-top': options.height + 'px',
+            })
+            .text(options.text)
+            .hide().fadeIn(200);
+    }
+    if (options.bar !== false) {
+        this.bar_el = $('<div class="sprite-loading-bar"></div>').appendTo(container)
+            .css({
+                width:'200px',
+                height:'5px',
+                position:'absolute',
+                backgroundColor: (options.theme === 'dark' ? '#727690' : '#D3D6DD'),
+                padding: '0',
+                'top': '50%',
+                'transform': 'translateY(-50%)',
+                '-webkit-transform': 'translateY(-50%)',
+                '-ms-transform': 'translateY(-50%)',
+                'margin-top': (options.height - 15) + 'px',
+                'left': '50%',
+                'margin-left': '-100px'
+            })
+            .hide().fadeIn(200);
+        this.bar_progress_el = $('<div class="sprite-loading-bar-progress"></div>').appendTo(this.bar_el)
+            .css({
+                width:'0%',
+                '-webkit-transition': 'width 0.2s ease-out',
+                '-moz-transition': 'width 0.2s ease-out',
+                '-o-transition': 'width 0.2s ease-out',
+                'transition': 'width 0.2s ease-out',
+                height:'100%',
+                backgroundColor: '#F8B533'
+            })
             .hide().fadeIn(200);
     }
     var obj = $('<div class="sprite-loading"></div>').appendTo(container);
@@ -66,6 +114,12 @@ var SpriteLoading = function (container, custom_options) {
                     if (options.backdrop) {
                         bd.fadeOut(200, function(){$(this).remove();});
                     }
+                    if (options.text) {
+                        that.text_el.remove();
+                    }
+                    if (options.bar) {
+                        that.bar_el.remove();
+                    }
                     obj.remove();
                     that.finish_callback();
                 }
@@ -79,5 +133,11 @@ var SpriteLoading = function (container, custom_options) {
 
 SpriteLoading.prototype.finish = function (callback) {
     this.set_finish = true;
-    this.finish_callback = callback;
+    this.finish_callback = callback || function(){};
+};
+SpriteLoading.prototype.updateText = function (text) {
+    this.text_el.text(text);
+};
+SpriteLoading.prototype.updateBar = function (percentage) {
+    this.bar_progress_el.css({width: percentage + '%'});
 };

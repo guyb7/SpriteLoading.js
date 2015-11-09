@@ -44,6 +44,8 @@ var loading = new SpriteLoading($('#your_container'), {
         out_end: 45
     },
     backdrop: false,
+    text: false,
+    bar: false,
     theme: 'light',
     sprite_url: 'https://correlife.org/img/loading.png',
     sprite_url_dark: 'https://correlife.org/img/loading-dark.png'
@@ -59,6 +61,8 @@ var loading = new SpriteLoading($('#your_container'), {
 | frames.loop_end   | The number of the last frame of the loop  |
 | frames.out_end    | The number of the last frame of the animation (out) |
 | backdrop          | Display a partially transparent screen under the animation |
+| text              | Display a text under the animation |
+| bar               | Display a progress bar under the animation |
 | theme             | Options: light/dark Default: light  |
 | sprite_url        | The url to the light themed sprite  |
 | sprite_url_dark   | The url to the dark themed sprite |
@@ -69,6 +73,24 @@ Create a single vertical sprite (where each frame of the animation is below the 
 There are many sprite generators to convert individual files to a single sprite, for example this tool: http://www.cssportal.com/css-sprite-generator/
 
 Finally, set the width/height/frames options according to your animation.
+
+## Text & Progress Bar
+After setting the text and/or bar options, call the updateText() and updateBar() methods to change these values.
+```javascript
+var loading = new SpriteLoading($('#your_container'), {text: 'Loading...', bar: true});
+window.setTimeout(function(){
+    loading.updateText('Still loading...');
+    loading.updateBar(33);
+}, 1000);
+window.setTimeout(function(){
+    loading.updateText('Getting there...');
+    loading.updateBar(67);
+}, 2000);
+window.setTimeout(function(){
+    loading.updateText('');
+    loading.updateBar(100);
+}, 3000);
+```
 
 ## Credits
 Guy Brukhis, Correlife.org
